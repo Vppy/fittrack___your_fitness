@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitTrack - Login</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="welcome-container">
+        <div class="logo">
+            <svg width="100" height="100" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="45" class="logo-circle" fill="none" stroke="#4CAF50" stroke-width="5"/>
+                <path d="M30 50 L45 65 L70 35" class="logo-check" fill="none" stroke="#4CAF50" stroke-width="5"/>
+            </svg>
+        </div>
+        <h1>Welcome Back</h1>
+        <form class="login-form" onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <svg class="input-icon" width="20" height="20" viewBox="0 0 20 20">
+                    <circle cx="10" cy="6" r="4" fill="none" stroke="#666" stroke-width="2"/>
+                    <path d="M3 18 C3 13, 17 13, 17 18" fill="none" stroke="#666" stroke-width="2"/>
+                </svg>
+                <input type="email" id="loginEmail" placeholder="Email" required>
+                <span class="validation-message" id="loginEmailValidation"></span>
+            </div>
+            <div class="form-group password-group">
+                <svg class="input-icon" width="20" height="20" viewBox="0 0 20 20">
+                    <rect x="3" y="8" width="14" height="10" rx="2" fill="none" stroke="#666" stroke-width="2"/>
+                    <circle cx="10" cy="13" r="2" fill="#666"/>
+                    <path d="M10 13 L10 15" stroke="#666" stroke-width="2"/>
+                </svg>
+                <input type="password" id="loginPassword" placeholder="Password" required>
+                <button type="button" class="toggle-password" onclick="togglePasswordVisibility('loginPassword', this)">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                </button>
+                <span class="validation-message" id="loginPasswordValidation"></span>
+            </div>
+            <div class="form-group remember-forgot">
+                <label class="remember-me">
+                    <input type="checkbox" id="rememberMe">
+                    Remember me
+                </label>
+                <a href="#" class="forgot-password">Forgot Password?</a>
+            </div>
+            <button type="submit" class="btn primary login-btn">Sign In</button>
+        </form>
+        <p class="signup-text">Don't have an account? <a href="register.html" class="signup-link">Sign Up</a></p>
+        <button class="btn secondary back-btn" onclick="location.href='index.html'">Back to Home</button>
+    </div>
+
+    <script>
+       !function togglePasswordVisibility(inputId, button) {
+            const input = document.getElementById(inputId);
+            input.type = input.type === 'password' ? 'text' : 'password';
+            button.classList.toggle('show');
+        }();
+
+        function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+
+            // Reset validation messages
+            document.getElementById('loginEmailValidation').textContent = '';
+            document.getElementById('loginPasswordValidation').textContent = '';
+
+            if (email && password) {
+                if (rememberMe) {
+                    localStorage.setItem('rememberedEmail', email);
+                } else {
+                    localStorage.removeItem('rememberedEmail');
+                }
+
+                // Create a dummy user if one doesn't exist
+                if (!localStorage.getItem('currentUser')) {
+                    const dummyUser = {
+                        firstName: "Demo",
+                        lastName: "User",
+                        email: email,
+                        password: password,
+                        weight: 70,
+                        height: 170,
+                        phone: "1234567890",
+                        gender: "other"
+                    };
+                    localStorage.setItem('currentUser', JSON.stringify(dummyUser));
+                }
+                
+                window.location.href = 'dashboard.html';
+            } else {
+                if (!email) document.getElementById('loginEmailValidation').textContent = 'Email is required';
+                if (!password) document.getElementById('loginPasswordValidation').textContent = 'Password is required';
+            }
+        }
+
+        // Check for remembered email on page load
+        window.onload = function() {
+            const rememberedEmail = localStorage.getItem('rememberedEmail');
+            if (rememberedEmail) {
+                document.getElementById('loginEmail').value = rememberedEmail;
+                document.getElementById('rememberMe').checked = true;
+            }
+        }
+    </script>
+</body>
+</html>
